@@ -22,7 +22,7 @@ SamplerAudioProcessorEditor::SamplerAudioProcessorEditor (SamplerAudioProcessor&
 
     // Make sure that before the constructor has finished, you've set the
     // editor's size to whatever you need it to be.
-    setSize (200, 200);
+    setSize (600, 200);
 }
 
 SamplerAudioProcessorEditor::~SamplerAudioProcessorEditor()
@@ -34,25 +34,42 @@ void SamplerAudioProcessorEditor::paint (juce::Graphics& g)
 {
     // (Our component is opaque, so we must completely fill the background with a solid colour)
     g.fillAll (juce::Colours::black);
-    g.setFont(15);
 
-    if(audioProcessor.getNumSamplerSounds() > 0)
+    g.setColour(juce::Colours::whitesmoke);
+
+    if(shouldRepaint)
     {
-        g.fillAll(juce::Colours::whitesmoke);
-        g.setColour(juce::Colours::black);
-        g.drawText("Sound Loaded", getWidth() / 2 - 50, getHeight() / 2 - 10, 100, 20, juce::Justification::centred);
-    }
-    else
-    {
-        g.fillAll(juce::Colours::black);
-        g.setColour(juce::Colours::white);
-        g.drawText("Drg A File To Get Started", getWidth() / 2 - 50, getHeight() / 2 - 10, 100, 20, juce::Justification::centred);
+        hasPreviouslyPainted = true;
+
+        audioPoints.clear();
+
+        juce::AudioBuffer<float> waveform = audioProcessor.getWaveform();
+        int ratio = waveform.getNumSamples() / getWidth();
+        auto buffer = waveform.getReadPointer(0);
+
+        for (int sample = 0; sample < waveform.getNumSamples(); sample += ratio)
+        {
+            audioPoints.push_back(buffer[sample]);
+        }
+
+        waveformPath.startNewSubPath(0, getHeight() / 2);
+
+        for (int sample = 0; sample < audioPoints.size(); ++sample)
+        {
+            auto point = juce::jmap<float>(audioPoints[sample], -1.0f, 1.0f, 200.0f, 0.0f);
+
+            waveformPath.lineTo(sample, point);
+        }
+
+        g.strokePath(waveformPath, juce::PathStrokeType(2));
+
+        shouldRepaint = false;
     }
 }
 
 void SamplerAudioProcessorEditor::resized()
 {
-    //loadButton.setBounds(getWidth() / 2 - 50, getHeight() / 2 - 50, 100, 100);
+	//
 }
 
 bool SamplerAudioProcessorEditor::isInterestedInFileDrag(const juce::StringArray& files)
@@ -74,6 +91,7 @@ void SamplerAudioProcessorEditor::filesDropped(const juce::StringArray& files, i
     {
 	    if(isInterestedInFileDrag(file))
 	    {
+            shouldRepaint = true;
             audioProcessor.loadFile(file);
 	    }
     }

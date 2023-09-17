@@ -198,12 +198,30 @@ void SamplerAudioProcessor::loadFile(const juce::String& path)
 
     audioFormatReader = audioFormatManager.createReaderFor(file);
 
+    const int audioFileLengthInSamples = static_cast<int>(audioFormatReader->lengthInSamples);
+
+    waveform.setSize(1, audioFileLengthInSamples);
+
+    audioFormatReader->read(
+        &waveform, 
+        0, 
+        audioFileLengthInSamples,
+        0, 
+        true, 
+        false
+    );
+
     sampler.addSound(new juce::SamplerSound("Sample", *audioFormatReader, midiRange, midiNoteC3, attackTime, releaseTime, maxTimeInSeconds));
 }
 
 int SamplerAudioProcessor::getNumSamplerSounds()
 {
     return sampler.getNumSounds();
+}
+
+juce::AudioBuffer<float>& SamplerAudioProcessor::getWaveform()
+{
+    return waveform;
 }
 
 //==============================================================================

@@ -31,6 +31,14 @@ public:
 private:
 	juce::TextButton loadButton{"Load"};
 
+	std::vector<float> audioPoints;
+
+	bool shouldRepaint{ false };
+
+	juce::AudioBuffer<float> waveform;
+
+	juce::Path waveformPath;
+
 	// This reference is provided as a quick way for your editor to
 	// access the processor object that created it.
 	SamplerAudioProcessor& audioProcessor;
