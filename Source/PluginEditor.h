@@ -14,22 +14,26 @@
 //==============================================================================
 /**
 */
-class SamplerAudioProcessorEditor  : public juce::AudioProcessorEditor
+class SamplerAudioProcessorEditor : public juce::AudioProcessorEditor,
+                                    public juce::FileDragAndDropTarget
 {
 public:
-    SamplerAudioProcessorEditor (SamplerAudioProcessor&);
-    ~SamplerAudioProcessorEditor() override;
+	SamplerAudioProcessorEditor(SamplerAudioProcessor&);
+	~SamplerAudioProcessorEditor() override;
 
-    //==============================================================================
-    void paint (juce::Graphics&) override;
-    void resized() override;
+	//==============================================================================
+	void paint(juce::Graphics&) override;
+	void resized() override;
+
+	bool isInterestedInFileDrag(const juce::StringArray& files) override;
+	void filesDropped(const juce::StringArray& files, int x, int y) override;
 
 private:
-    juce::TextButton loadButton{ "Load" };
+	juce::TextButton loadButton{"Load"};
 
-    // This reference is provided as a quick way for your editor to
-    // access the processor object that created it.
-    SamplerAudioProcessor& audioProcessor;
+	// This reference is provided as a quick way for your editor to
+	// access the processor object that created it.
+	SamplerAudioProcessor& audioProcessor;
 
-    JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR (SamplerAudioProcessorEditor)
+	JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR(SamplerAudioProcessorEditor)
 };

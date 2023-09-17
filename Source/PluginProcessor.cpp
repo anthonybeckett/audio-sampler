@@ -176,6 +176,8 @@ void SamplerAudioProcessor::setStateInformation (const void* data, int sizeInByt
 
 void SamplerAudioProcessor::loadFile()
 {
+    sampler.clearSounds();
+
     juce::FileChooser chooser{"Please load a file"};
 
     if(chooser.browseForFileToOpen())
@@ -186,6 +188,22 @@ void SamplerAudioProcessor::loadFile()
     }
 
     sampler.addSound(new juce::SamplerSound("Sample", *audioFormatReader, midiRange, midiNoteC3, attackTime, releaseTime, maxTimeInSeconds));
+}
+
+void SamplerAudioProcessor::loadFile(const juce::String& path)
+{
+    sampler.clearSounds();
+
+    auto file = juce::File(path);
+
+    audioFormatReader = audioFormatManager.createReaderFor(file);
+
+    sampler.addSound(new juce::SamplerSound("Sample", *audioFormatReader, midiRange, midiNoteC3, attackTime, releaseTime, maxTimeInSeconds));
+}
+
+int SamplerAudioProcessor::getNumSamplerSounds()
+{
+    return sampler.getNumSounds();
 }
 
 //==============================================================================
