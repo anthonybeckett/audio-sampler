@@ -34,7 +34,8 @@ SamplerAudioProcessor::SamplerAudioProcessor()
 
 SamplerAudioProcessor::~SamplerAudioProcessor()
 {
-    audioFormatReader = nullptr;
+	audioFormatReader = nullptr;
+	delete audioFormatReader;
 }
 
 //==============================================================================

@@ -37,13 +37,13 @@ void SamplerAudioProcessorEditor::paint (juce::Graphics& g)
 
     g.setColour(juce::Colours::whitesmoke);
 
-    if(shouldRepaint)
+    juce::AudioBuffer<float> waveform = audioProcessor.getWaveform();
+
+    if(waveform.getNumChannels() > 0)
     {
-        hasPreviouslyPainted = true;
-
         audioPoints.clear();
+        waveformPath.clear();
 
-        juce::AudioBuffer<float> waveform = audioProcessor.getWaveform();
         int ratio = waveform.getNumSamples() / getWidth();
         auto buffer = waveform.getReadPointer(0);
 
