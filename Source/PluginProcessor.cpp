@@ -34,8 +34,7 @@ SamplerAudioProcessor::SamplerAudioProcessor()
 
 SamplerAudioProcessor::~SamplerAudioProcessor()
 {
-	audioFormatReader = nullptr;
-	delete audioFormatReader;
+    //
 }
 
 //==============================================================================
@@ -185,10 +184,13 @@ void SamplerAudioProcessor::loadFile()
     {
         auto file = chooser.getResult();
 
-        audioFormatReader = audioFormatManager.createReaderFor(file);
+        auto audioFormatReader = audioFormatManager.createReaderFor(file);
+        if (audioFormatReader)
+        {
+            sampler.addSound(new juce::SamplerSound("Sample", *audioFormatReader, midiRange, midiNoteC3, attackTime, releaseTime, maxTimeInSeconds));
+            delete audioFormatReader; // reader is no longer needed, the SamplerSound already used it and won't need it further
+        }
     }
-
-    sampler.addSound(new juce::SamplerSound("Sample", *audioFormatReader, midiRange, midiNoteC3, attackTime, releaseTime, maxTimeInSeconds));
 }
 
 void SamplerAudioProcessor::loadFile(const juce::String& path)
@@ -197,22 +199,25 @@ void SamplerAudioProcessor::loadFile(const juce::String& path)
 
     auto file = juce::File(path);
 
-    audioFormatReader = audioFormatManager.createReaderFor(file);
+    if(auto audioFormatReader = audioFormatManager.createReaderFor(file))
+    {
+        const int audioFileLengthInSamples = static_cast<int>(audioFormatReader->lengthInSamples);
 
-    const int audioFileLengthInSamples = static_cast<int>(audioFormatReader->lengthInSamples);
+        waveform.setSize(1, audioFileLengthInSamples);
 
-    waveform.setSize(1, audioFileLengthInSamples);
+        audioFormatReader->read(
+            &waveform,
+            0,
+            audioFileLengthInSamples,
+            0,
+            true,
+            false
+        );
 
-    audioFormatReader->read(
-        &waveform, 
-        0, 
-        audioFileLengthInSamples,
-        0, 
-        true, 
-        false
-    );
+        sampler.addSound(new juce::SamplerSound("Sample", *audioFormatReader, midiRange, midiNoteC3, attackTime, releaseTime, maxTimeInSeconds));
 
-    sampler.addSound(new juce::SamplerSound("Sample", *audioFormatReader, midiRange, midiNoteC3, attackTime, releaseTime, maxTimeInSeconds));
+        delete audioFormatReader;
+    }
 }
 
 int SamplerAudioProcessor::getNumSamplerSounds()

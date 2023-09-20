@@ -68,7 +68,6 @@ private:
     const int numVoices{ 32 };
 
     juce::AudioFormatManager audioFormatManager;
-    juce::AudioFormatReader* audioFormatReader{nullptr};
 
     juce::BigInteger midiRange;
 
