@@ -18,6 +18,11 @@ SamplerAudioProcessorEditor::SamplerAudioProcessorEditor (SamplerAudioProcessor&
         audioProcessor.loadFile();
     };
 
+    initialiseSlider(attackSlider, 0.0, 5.0, attackLabel, "Attack");
+    initialiseSlider(decaySlider, 0.0, 2.0, decayLabel, "Decay");
+    initialiseSlider(sustainSlider, 0.0, 1.0, sustainLabel, "Sustain");
+    initialiseSlider(releaseSlider, 0.0, 5.0, releaseLabel, "Release");
+
     addAndMakeVisible(loadButton);
 
     // Make sure that before the constructor has finished, you've set the
@@ -69,7 +74,15 @@ void SamplerAudioProcessorEditor::paint (juce::Graphics& g)
 
 void SamplerAudioProcessorEditor::resized()
 {
-	//
+    const float startX = 0.6f;
+    const float startY = 0.6f;
+    const float sliderWidth = 0.1f;
+    const float sliderHeight = 0.4f;
+
+    attackSlider.setBoundsRelative(startX, startY, sliderWidth, sliderHeight);
+    decaySlider.setBoundsRelative(startX + sliderWidth, startY, sliderWidth, sliderHeight);
+    sustainSlider.setBoundsRelative(startX + sliderWidth * 2, startY, sliderWidth, sliderHeight);
+    releaseSlider.setBoundsRelative(startX + sliderWidth * 3, startY, sliderWidth, sliderHeight);
 }
 
 bool SamplerAudioProcessorEditor::isInterestedInFileDrag(const juce::StringArray& files)
@@ -97,4 +110,17 @@ void SamplerAudioProcessorEditor::filesDropped(const juce::StringArray& files, i
     }
 
     repaint();
+}
+
+void SamplerAudioProcessorEditor::initialiseSlider(juce::Slider& slider, double minimumRange, double maximumRange, juce::Label& label, const std::string& labelText)
+{
+    slider.setSliderStyle(juce::Slider::SliderStyle::RotaryVerticalDrag);
+    slider.setTextBoxStyle(juce::Slider::TextBoxBelow, false, 40, 20);
+    slider.setRange(minimumRange, maximumRange, 0.01);
+    addAndMakeVisible(slider);
+
+    label.setFont(10.0f);
+    label.setText(labelText, juce::dontSendNotification);
+    label.setJustificationType(juce::Justification::centredTop);
+    label.attachToComponent(&slider, false);
 }

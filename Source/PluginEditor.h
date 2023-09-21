@@ -39,6 +39,21 @@ private:
 
 	juce::Path waveformPath;
 
+	// Sliders
+	juce::Slider attackSlider;
+	juce::Label attackLabel;
+
+	juce::Slider decaySlider;
+	juce::Label decayLabel;
+
+	juce::Slider sustainSlider;
+	juce::Label sustainLabel;
+
+	juce::Slider releaseSlider;
+	juce::Label releaseLabel;
+
+	void initialiseSlider(juce::Slider& slider, double minimumRange, double maximumRange, juce::Label& label, const std::string& labelText);
+
 	// This reference is provided as a quick way for your editor to
 	// access the processor object that created it.
 	SamplerAudioProcessor& audioProcessor;
