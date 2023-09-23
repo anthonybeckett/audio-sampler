@@ -63,6 +63,16 @@ public:
 
     juce::AudioBuffer<float>& getWaveform();
 
+    //Temporary
+    float attack{0.0f};
+    float decay{ 0.0f };
+    float sustain{ 0.0f };
+    float release{ 0.0f };
+
+    void updateAdsr();
+
+    juce::ADSR::Parameters& getAdsrParams();
+
 private:
     juce::Synthesiser sampler;
     const int numVoices{ 32 };
@@ -77,6 +87,8 @@ private:
     double maxTimeInSeconds = 10.0;
 
     juce::AudioBuffer<float> waveform;
+
+    juce::ADSR::Parameters adsrParams;
 
     //==============================================================================
     JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR (SamplerAudioProcessor)

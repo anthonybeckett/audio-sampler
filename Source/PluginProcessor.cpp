@@ -103,6 +103,8 @@ void SamplerAudioProcessor::changeProgramName (int index, const juce::String& ne
 void SamplerAudioProcessor::prepareToPlay (double sampleRate, int samplesPerBlock)
 {
     sampler.setCurrentPlaybackSampleRate(sampleRate);
+
+    updateAdsr();
 }
 
 void SamplerAudioProcessor::releaseResources()
@@ -228,6 +230,22 @@ int SamplerAudioProcessor::getNumSamplerSounds()
 juce::AudioBuffer<float>& SamplerAudioProcessor::getWaveform()
 {
     return waveform;
+}
+
+void SamplerAudioProcessor::updateAdsr()
+{
+    for (int i = 0; i < sampler.getNumSounds(); ++i)
+    {
+        if (auto sound = dynamic_cast<juce::SamplerSound*>(sampler.getSound(i).get()))
+        {
+            sound->setEnvelopeParameters(adsrParams);
+        }
+    }
+}
+
+juce::ADSR::Parameters& SamplerAudioProcessor::getAdsrParams()
+{
+    return adsrParams;
 }
 
 //==============================================================================

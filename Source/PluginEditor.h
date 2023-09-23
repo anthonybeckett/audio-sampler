@@ -1,7 +1,7 @@
 /*
   ==============================================================================
 
-    This file contains the basic framework code for a JUCE plugin editor.
+	This file contains the basic framework code for a JUCE plugin editor.
 
   ==============================================================================
 */
@@ -15,7 +15,8 @@
 /**
 */
 class SamplerAudioProcessorEditor : public juce::AudioProcessorEditor,
-                                    public juce::FileDragAndDropTarget
+	public juce::FileDragAndDropTarget,
+	public juce::Slider::Listener
 {
 public:
 	SamplerAudioProcessorEditor(SamplerAudioProcessor&);
@@ -28,8 +29,10 @@ public:
 	bool isInterestedInFileDrag(const juce::StringArray& files) override;
 	void filesDropped(const juce::StringArray& files, int x, int y) override;
 
+	void sliderValueChanged(juce::Slider* slider) override;
+
 private:
-	juce::TextButton loadButton{"Load"};
+	juce::TextButton loadButton{ "Load" };
 
 	std::vector<float> audioPoints;
 

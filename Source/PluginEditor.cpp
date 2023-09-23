@@ -57,13 +57,13 @@ void SamplerAudioProcessorEditor::paint (juce::Graphics& g)
             audioPoints.push_back(buffer[sample]);
         }
 
-        waveformPath.startNewSubPath(0, getHeight() / 2);
+        waveformPath.startNewSubPath(0, static_cast<float>(getHeight()) / 2);
 
         for (int sample = 0; sample < audioPoints.size(); ++sample)
         {
             auto point = juce::jmap<float>(audioPoints[sample], -1.0f, 1.0f, 200.0f, 0.0f);
 
-            waveformPath.lineTo(sample, point);
+            waveformPath.lineTo(static_cast<float>(sample), point);
         }
 
         g.strokePath(waveformPath, juce::PathStrokeType(2));
@@ -117,10 +117,36 @@ void SamplerAudioProcessorEditor::initialiseSlider(juce::Slider& slider, double 
     slider.setSliderStyle(juce::Slider::SliderStyle::RotaryVerticalDrag);
     slider.setTextBoxStyle(juce::Slider::TextBoxBelow, false, 40, 20);
     slider.setRange(minimumRange, maximumRange, 0.01);
+    slider.addListener(this);
     addAndMakeVisible(slider);
 
     label.setFont(10.0f);
     label.setText(labelText, juce::dontSendNotification);
     label.setJustificationType(juce::Justification::centredTop);
     label.attachToComponent(&slider, false);
+}
+
+void SamplerAudioProcessorEditor::sliderValueChanged(juce::Slider* slider)
+{
+    if(slider == &attackSlider)
+    {
+        audioProcessor.getAdsrParams().attack = static_cast<float>(attackSlider.getValue());
+    }
+
+    if (slider == &decaySlider)
+    {
+        audioProcessor.getAdsrParams().decay = static_cast<float>(decaySlider.getValue());
+    }
+
+    if (slider == &sustainSlider)
+    {
+        audioProcessor.getAdsrParams().sustain = static_cast<float>(sustainSlider.getValue());
+    }
+
+    if (slider == &releaseSlider)
+    {
+        audioProcessor.getAdsrParams().release = static_cast<float>(releaseSlider.getValue());
+    }
+
+    audioProcessor.updateAdsr();
 }
