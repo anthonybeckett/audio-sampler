@@ -6,6 +6,14 @@
               defines="JUCE_MODAL_LOOPS_PERMITTED=1">
   <MAINGROUP id="ApfgCW" name="Sampler">
     <GROUP id="{D15984F8-E121-A625-177A-BAA0884035EE}" name="Source">
+      <GROUP id="{EF38E7AD-D0F2-49C2-7A50-45A0506E2768}" name="UI">
+        <FILE id="Enjm8i" name="AdsrComponent.cpp" compile="1" resource="0"
+              file="Source/UI/AdsrComponent.cpp"/>
+        <FILE id="mXLkLZ" name="AdsrComponent.h" compile="0" resource="0" file="Source/UI/AdsrComponent.h"/>
+        <FILE id="yy1Rfv" name="WaveThumbnail.cpp" compile="1" resource="0"
+              file="Source/UI/WaveThumbnail.cpp"/>
+        <FILE id="k3szqc" name="WaveThumbnail.h" compile="0" resource="0" file="Source/UI/WaveThumbnail.h"/>
+      </GROUP>
       <FILE id="GYFAt8" name="PluginProcessor.cpp" compile="1" resource="0"
             file="Source/PluginProcessor.cpp"/>
       <FILE id="eGbFTE" name="PluginProcessor.h" compile="0" resource="0"
