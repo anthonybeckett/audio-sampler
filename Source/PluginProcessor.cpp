@@ -12,16 +12,19 @@
 //==============================================================================
 SamplerAudioProcessor::SamplerAudioProcessor()
 #ifndef JucePlugin_PreferredChannelConfigurations
-     : AudioProcessor (BusesProperties()
-                     #if ! JucePlugin_IsMidiEffect
-                      #if ! JucePlugin_IsSynth
-                       .withInput  ("Input",  juce::AudioChannelSet::stereo(), true)
-                      #endif
-                       .withOutput ("Output", juce::AudioChannelSet::stereo(), true)
-                     #endif
-                       )
+    : AudioProcessor(BusesProperties()
+#if ! JucePlugin_IsMidiEffect
+#if ! JucePlugin_IsSynth
+        .withInput("Input", juce::AudioChannelSet::stereo(), true)
+#endif
+        .withOutput("Output", juce::AudioChannelSet::stereo(), true)
+#endif
+    ),
+    apvts(*this, nullptr, "parameters", createParameters())
 #endif
 {
+    apvts.state.addListener(this);
+
     audioFormatManager.registerBasicFormats();
 
     midiRange.setRange(0, 127, true);
@@ -148,6 +151,13 @@ void SamplerAudioProcessor::processBlock (juce::AudioBuffer<float>& buffer, juce
     for (auto i = totalNumInputChannels; i < totalNumOutputChannels; ++i)
         buffer.clear (i, 0, buffer.getNumSamples());
 
+    if(shouldUpdate)
+    {
+        updateAdsr();
+
+        shouldUpdate = false;
+    }
+
     sampler.renderNextBlock(buffer, midiMessages, 0, buffer.getNumSamples());
 }
 
@@ -219,6 +229,8 @@ void SamplerAudioProcessor::loadFile(const juce::String& path)
         sampler.addSound(new juce::SamplerSound("Sample", *audioFormatReader, midiRange, midiNoteC3, attackTime, releaseTime, maxTimeInSeconds));
 
         delete audioFormatReader;
+
+        updateAdsr();
     }
 }
 
@@ -234,6 +246,11 @@ juce::AudioBuffer<float>& SamplerAudioProcessor::getWaveform()
 
 void SamplerAudioProcessor::updateAdsr()
 {
+    adsrParams.attack = apvts.getRawParameterValue("ATTACK")->load();
+    adsrParams.decay = apvts.getRawParameterValue("DECAY")->load();
+    adsrParams.sustain = apvts.getRawParameterValue("SUSTAIN")->load();
+    adsrParams.release = apvts.getRawParameterValue("RELEASE")->load();
+
     for (int i = 0; i < sampler.getNumSounds(); ++i)
     {
         if (auto sound = dynamic_cast<juce::SamplerSound*>(sampler.getSound(i).get()))
@@ -246,6 +263,28 @@ void SamplerAudioProcessor::updateAdsr()
 juce::ADSR::Parameters& SamplerAudioProcessor::getAdsrParams()
 {
     return adsrParams;
+}
+
+juce::AudioProcessorValueTreeState& SamplerAudioProcessor::getApvts()
+{
+    return apvts;
+}
+
+juce::AudioProcessorValueTreeState::ParameterLayout SamplerAudioProcessor::createParameters()
+{
+    std::vector<std::unique_ptr<juce::RangedAudioParameter>> parameters;
+
+    parameters.push_back(std::make_unique<juce::AudioParameterFloat>("ATTACK", "Attack", 0.0f, 5.0f, 0.0f));
+    parameters.push_back(std::make_unique<juce::AudioParameterFloat>("DECAY", "Decay", 0.0f, 5.0f, 1.0f));
+    parameters.push_back(std::make_unique<juce::AudioParameterFloat>("SUSTAIN", "Sustain", 0.0f, 1.0f, 1.0f));
+    parameters.push_back(std::make_unique<juce::AudioParameterFloat>("RELEASE", "Release", 0.0f, 5.0f, 1.0f));
+
+    return { parameters.begin(), parameters.end() };
+}
+
+void SamplerAudioProcessor::valueTreePropertyChanged(juce::ValueTree& treeWhosePropertyHasChanged, const juce::Identifier& property)
+{
+    shouldUpdate = true;
 }
 
 //==============================================================================

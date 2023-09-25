@@ -18,10 +18,10 @@ SamplerAudioProcessorEditor::SamplerAudioProcessorEditor (SamplerAudioProcessor&
         audioProcessor.loadFile();
     };
 
-    initialiseSlider(attackSlider, 0.0, 5.0, attackLabel, "Attack");
-    initialiseSlider(decaySlider, 0.0, 2.0, decayLabel, "Decay");
-    initialiseSlider(sustainSlider, 0.0, 1.0, sustainLabel, "Sustain");
-    initialiseSlider(releaseSlider, 0.0, 5.0, releaseLabel, "Release");
+    initialiseSlider(attackSlider, attackSliderAttachment, "ATTACK", attackLabel, "Attack");
+    initialiseSlider(decaySlider, decaySliderAttachment, "DECAY", decayLabel, "Decay");
+    initialiseSlider(sustainSlider, sustainSliderAttachment, "SUSTAIN", sustainLabel, "Sustain");
+    initialiseSlider(releaseSlider, releaseSliderAttachment, "RELEASE", releaseLabel, "Release");
 
     addAndMakeVisible(loadButton);
 
@@ -112,41 +112,15 @@ void SamplerAudioProcessorEditor::filesDropped(const juce::StringArray& files, i
     repaint();
 }
 
-void SamplerAudioProcessorEditor::initialiseSlider(juce::Slider& slider, double minimumRange, double maximumRange, juce::Label& label, const std::string& labelText)
+void SamplerAudioProcessorEditor::initialiseSlider(juce::Slider& slider, std::unique_ptr<juce::AudioProcessorValueTreeState::SliderAttachment>& sliderAttachment, const std::string& attachmentId, juce::Label& label, const std::string& labelText)
 {
     slider.setSliderStyle(juce::Slider::SliderStyle::RotaryVerticalDrag);
     slider.setTextBoxStyle(juce::Slider::TextBoxBelow, false, 40, 20);
-    slider.setRange(minimumRange, maximumRange, 0.01);
-    slider.addListener(this);
+    sliderAttachment = std::make_unique<juce::AudioProcessorValueTreeState::SliderAttachment>(audioProcessor.getApvts(), attachmentId, slider);
     addAndMakeVisible(slider);
 
     label.setFont(10.0f);
     label.setText(labelText, juce::dontSendNotification);
     label.setJustificationType(juce::Justification::centredTop);
     label.attachToComponent(&slider, false);
-}
-
-void SamplerAudioProcessorEditor::sliderValueChanged(juce::Slider* slider)
-{
-    if(slider == &attackSlider)
-    {
-        audioProcessor.getAdsrParams().attack = static_cast<float>(attackSlider.getValue());
-    }
-
-    if (slider == &decaySlider)
-    {
-        audioProcessor.getAdsrParams().decay = static_cast<float>(decaySlider.getValue());
-    }
-
-    if (slider == &sustainSlider)
-    {
-        audioProcessor.getAdsrParams().sustain = static_cast<float>(sustainSlider.getValue());
-    }
-
-    if (slider == &releaseSlider)
-    {
-        audioProcessor.getAdsrParams().release = static_cast<float>(releaseSlider.getValue());
-    }
-
-    audioProcessor.updateAdsr();
 }

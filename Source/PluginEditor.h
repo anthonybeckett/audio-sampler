@@ -15,8 +15,7 @@
 /**
 */
 class SamplerAudioProcessorEditor : public juce::AudioProcessorEditor,
-	public juce::FileDragAndDropTarget,
-	public juce::Slider::Listener
+	public juce::FileDragAndDropTarget
 {
 public:
 	SamplerAudioProcessorEditor(SamplerAudioProcessor&);
@@ -28,8 +27,6 @@ public:
 
 	bool isInterestedInFileDrag(const juce::StringArray& files) override;
 	void filesDropped(const juce::StringArray& files, int x, int y) override;
-
-	void sliderValueChanged(juce::Slider* slider) override;
 
 private:
 	juce::TextButton loadButton{ "Load" };
@@ -55,7 +52,12 @@ private:
 	juce::Slider releaseSlider;
 	juce::Label releaseLabel;
 
-	void initialiseSlider(juce::Slider& slider, double minimumRange, double maximumRange, juce::Label& label, const std::string& labelText);
+	std::unique_ptr<juce::AudioProcessorValueTreeState::SliderAttachment> attackSliderAttachment;
+	std::unique_ptr<juce::AudioProcessorValueTreeState::SliderAttachment> decaySliderAttachment;
+	std::unique_ptr<juce::AudioProcessorValueTreeState::SliderAttachment> sustainSliderAttachment;
+	std::unique_ptr<juce::AudioProcessorValueTreeState::SliderAttachment> releaseSliderAttachment;
+
+	void initialiseSlider(juce::Slider& slider, std::unique_ptr<juce::AudioProcessorValueTreeState::SliderAttachment>& sliderAttachment, const std::string& attachmentId, juce::Label& label, const std::string& labelText);
 
 	// This reference is provided as a quick way for your editor to
 	// access the processor object that created it.

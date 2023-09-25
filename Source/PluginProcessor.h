@@ -17,6 +17,7 @@ class SamplerAudioProcessor  : public juce::AudioProcessor
                             #if JucePlugin_Enable_ARA
                              , public juce::AudioProcessorARAExtension
                             #endif
+    , public juce::ValueTree::Listener
 {
 public:
     //==============================================================================
@@ -73,6 +74,8 @@ public:
 
     juce::ADSR::Parameters& getAdsrParams();
 
+    juce::AudioProcessorValueTreeState& getApvts();
+
 private:
     juce::Synthesiser sampler;
     const int numVoices{ 32 };
@@ -89,6 +92,13 @@ private:
     juce::AudioBuffer<float> waveform;
 
     juce::ADSR::Parameters adsrParams;
+
+    juce::AudioProcessorValueTreeState apvts;
+    juce::AudioProcessorValueTreeState::ParameterLayout createParameters();
+
+    void valueTreePropertyChanged(juce::ValueTree& treeWhosePropertyHasChanged, const juce::Identifier& property) override;
+
+    std::atomic<bool> shouldUpdate{ false };
 
     //==============================================================================
     JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR (SamplerAudioProcessor)
