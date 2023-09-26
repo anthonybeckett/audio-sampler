@@ -19,13 +19,14 @@ SamplerAudioProcessorEditor::SamplerAudioProcessorEditor (SamplerAudioProcessor&
     addAndMakeVisible(waveThumbnail);
     addAndMakeVisible(adsrComponent);
 
-    // Make sure that before the constructor has finished, you've set the
-    // editor's size to whatever you need it to be.
+    startTimerHz(60);
+
     setSize (600, 400);
 }
 
 SamplerAudioProcessorEditor::~SamplerAudioProcessorEditor()
 {
+    stopTimer();
 }
 
 //==============================================================================
@@ -41,6 +42,11 @@ void SamplerAudioProcessorEditor::resized()
 {
     waveThumbnail.setBoundsRelative(0.0f, 0.25f, 1.0f, 0.5f);
     adsrComponent.setBoundsRelative(0.0f, 0.75f, 1.0f, 0.25f);
+}
+
+void SamplerAudioProcessorEditor::timerCallback()
+{
+    repaint();
 }
 
 

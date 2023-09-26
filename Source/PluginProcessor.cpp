@@ -158,6 +158,24 @@ void SamplerAudioProcessor::processBlock (juce::AudioBuffer<float>& buffer, juce
         shouldUpdate = false;
     }
 
+    juce::MidiMessage m;
+    juce::MidiBuffer::Iterator it {midiMessages};
+    int sample;
+
+    while(it.getNextEvent(m, sample))
+    {
+	    if(m.isNoteOn())
+	    {
+            isNotePlayed = true;
+	    }
+        else if(m.isNoteOff())
+        {
+            isNotePlayed = false;
+        }
+    }
+
+    sampleCount = isNotePlayed ? sampleCount += buffer.getNumSamples() : 0;
+
     sampler.renderNextBlock(buffer, midiMessages, 0, buffer.getNumSamples());
 }
 
@@ -268,6 +286,16 @@ juce::ADSR::Parameters& SamplerAudioProcessor::getAdsrParams()
 juce::AudioProcessorValueTreeState& SamplerAudioProcessor::getApvts()
 {
     return apvts;
+}
+
+std::atomic<bool>& SamplerAudioProcessor::getIsNotePlayed()
+{
+    return isNotePlayed;
+}
+
+std::atomic<int>& SamplerAudioProcessor::getSampleCount()
+{
+    return sampleCount;
 }
 
 juce::AudioProcessorValueTreeState::ParameterLayout SamplerAudioProcessor::createParameters()

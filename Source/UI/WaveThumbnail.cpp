@@ -49,6 +49,15 @@ void WaveThumbnail::paint (juce::Graphics& g)
         g.setColour(juce::Colours::whitesmoke);
         g.setFont(15);
         g.drawFittedText(fileName, bounds, juce::Justification::topRight, 1);
+
+        //Draw the playhead
+        auto playheadPosition = juce::jmap<int>(audioProcessor.getSampleCount(), 0, audioProcessor.getWaveform().getNumSamples(), 0, getWidth());
+
+        g.setColour(juce::Colours::white);
+        g.drawLine(playheadPosition, 0, playheadPosition, getHeight(), 2.0f);
+
+        g.setColour(juce::Colours::black.withAlpha(0.2f));
+        g.fillRect(0, 0, playheadPosition, getHeight());
     }
 	else
 	{
@@ -93,3 +102,4 @@ void WaveThumbnail::filesDropped(const juce::StringArray& files, int x, int y)
 
     repaint();
 }
+
