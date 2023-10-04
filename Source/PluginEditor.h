@@ -13,6 +13,7 @@
 #include "./UI/CustomLAF.h"
 #include "./UI/WaveThumbnail.h"
 #include "./UI/AdsrComponent.h"
+#include "./UI/AdsrEnvelope.h"
 
 //==============================================================================
 /**
@@ -33,6 +34,8 @@ private:
 	CustomLAF customLaf;
 
 	WaveThumbnail waveThumbnail;
+
+	AdsrEnvelope adsrEnvelope;
 
 	AdsrComponent adsrComponent;
 

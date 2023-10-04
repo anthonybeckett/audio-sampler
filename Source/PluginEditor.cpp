@@ -14,12 +14,14 @@ SamplerAudioProcessorEditor::SamplerAudioProcessorEditor (SamplerAudioProcessor&
     : AudioProcessorEditor (&p),
 	audioProcessor (p),
 	waveThumbnail(p),
-	adsrComponent(p)
+	adsrComponent(p),
+    adsrEnvelope(p)
 {
     juce::LookAndFeel::setDefaultLookAndFeel(&customLaf);
 
     addAndMakeVisible(waveThumbnail);
     addAndMakeVisible(adsrComponent);
+    addAndMakeVisible(adsrEnvelope);
 
     startTimerHz(60);
 
@@ -45,7 +47,8 @@ void SamplerAudioProcessorEditor::paint (juce::Graphics& g)
 void SamplerAudioProcessorEditor::resized()
 {
     waveThumbnail.setBoundsRelative(0.0f, 0.25f, 1.0f, 0.5f);
-    adsrComponent.setBoundsRelative(0.0f, 0.75f, 1.0f, 0.25f);
+    adsrComponent.setBoundsRelative(0.0f, 0.75f, 0.5f, 0.25f);
+    adsrEnvelope.setBoundsRelative(0.5f, 0.75f, 0.5f, 0.25f);
 }
 
 void SamplerAudioProcessorEditor::timerCallback()
