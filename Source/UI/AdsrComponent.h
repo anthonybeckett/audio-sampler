@@ -44,7 +44,7 @@ private:
 	std::unique_ptr<juce::AudioProcessorValueTreeState::SliderAttachment> sustainSliderAttachment;
 	std::unique_ptr<juce::AudioProcessorValueTreeState::SliderAttachment> releaseSliderAttachment;
 
-	void initialiseSlider(juce::Slider& slider, std::unique_ptr<juce::AudioProcessorValueTreeState::SliderAttachment>& sliderAttachment, const std::string& attachmentId, juce::Label& label, const std::string& labelText);
+	void initialiseSlider(juce::Slider& slider, std::unique_ptr<juce::AudioProcessorValueTreeState::SliderAttachment>& sliderAttachment, const std::string& attachmentId, juce::Label& label, const std::string& labelText, double skewFactorFromMidPoint = 0.0);
 
 	SamplerAudioProcessor& audioProcessor;
 

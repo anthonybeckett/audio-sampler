@@ -10,6 +10,8 @@
         <FILE id="Enjm8i" name="AdsrComponent.cpp" compile="1" resource="0"
               file="Source/UI/AdsrComponent.cpp"/>
         <FILE id="mXLkLZ" name="AdsrComponent.h" compile="0" resource="0" file="Source/UI/AdsrComponent.h"/>
+        <FILE id="q8SJjg" name="CustomLAF.cpp" compile="1" resource="0" file="Source/UI/CustomLAF.cpp"/>
+        <FILE id="Ovd1VD" name="CustomLAF.h" compile="0" resource="0" file="Source/UI/CustomLAF.h"/>
         <FILE id="yy1Rfv" name="WaveThumbnail.cpp" compile="1" resource="0"
               file="Source/UI/WaveThumbnail.cpp"/>
         <FILE id="k3szqc" name="WaveThumbnail.h" compile="0" resource="0" file="Source/UI/WaveThumbnail.h"/>

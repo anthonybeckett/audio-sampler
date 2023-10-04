@@ -16,6 +16,8 @@ SamplerAudioProcessorEditor::SamplerAudioProcessorEditor (SamplerAudioProcessor&
 	waveThumbnail(p),
 	adsrComponent(p)
 {
+    juce::LookAndFeel::setDefaultLookAndFeel(&customLaf);
+
     addAndMakeVisible(waveThumbnail);
     addAndMakeVisible(adsrComponent);
 
@@ -26,6 +28,8 @@ SamplerAudioProcessorEditor::SamplerAudioProcessorEditor (SamplerAudioProcessor&
 
 SamplerAudioProcessorEditor::~SamplerAudioProcessorEditor()
 {
+    juce::LookAndFeel::setDefaultLookAndFeel(nullptr);
+
     stopTimer();
 }
 

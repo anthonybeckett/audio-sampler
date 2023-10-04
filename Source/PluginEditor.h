@@ -10,6 +10,7 @@
 
 #include <JuceHeader.h>
 #include "PluginProcessor.h"
+#include "./UI/CustomLAF.h"
 #include "./UI/WaveThumbnail.h"
 #include "./UI/AdsrComponent.h"
 
@@ -29,6 +30,8 @@ public:
 	void timerCallback() override;
 
 private:
+	CustomLAF customLaf;
+
 	WaveThumbnail waveThumbnail;
 
 	AdsrComponent adsrComponent;
